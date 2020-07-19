@@ -20,6 +20,8 @@ const Celestial = styled.div`
   opacity: 0.9;
   box-shadow: var(--bs-celestial);
   z-index: -1;
+
+  transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
 `;
 
 const IndexPage = () => {

@@ -66,8 +66,9 @@ const createD3Globe = (wrapper) => {
   bounds
     .append("path")
     .datum(sphere)
+    .attr("class", "sphere")
     .attr("d", geoPathGenerator)
-    .attr("fill", "var(--color-secondary");
+    .style("fill", "var(--color-secondary");
 
   bounds
     .selectAll(".country")

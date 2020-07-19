@@ -55,6 +55,10 @@ const Defaults = createGlobalStyle`
         text-decoration: none;
         color: black;
     }
+
+    .country, .sphere {
+       transition: fill 0.3s ease-out;
+    }
 `;
 
 export default Defaults;
