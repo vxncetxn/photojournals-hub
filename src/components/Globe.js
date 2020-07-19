@@ -8,7 +8,6 @@ import countryShapes from "../world-geojson.json";
 
 let dimensions = {
   width: window.innerWidth * 0.6,
-  height: window.innerHeight,
   margins: {
     top: 50,
     right: 150,
@@ -32,17 +31,18 @@ const sphere = { type: "Sphere" };
 const projection = geoOrthographic().fitWidth(dimensions.boundedWidth, sphere);
 const geoPathGenerator = geoPath(projection);
 
-// const [[x0, y0], [x1, y1]] = geoPathGenerator.bounds(sphere);
-// dimensions.boundedHeight = y1;
-// dimensions.height =
-//   dimensions.boundedHeight + dimensions.margins.top + dimensions.margins.bottom;
+const [[x0, y0], [x1, y1]] = geoPathGenerator.bounds(sphere);
+dimensions.boundedHeight = y1;
+dimensions.height =
+  dimensions.boundedHeight + dimensions.margins.top + dimensions.margins.bottom;
 
 const GlobePanel = styled.div`
-  width: 60%;
+  width: 70%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
   //   border: 1px solid blue;
 `;
 
@@ -67,7 +67,7 @@ const createD3Globe = (wrapper) => {
     .append("path")
     .datum(sphere)
     .attr("d", geoPathGenerator)
-    .attr("fill", "#f8f6ff");
+    .attr("fill", "var(--color-secondary");
 
   bounds
     .selectAll(".country")
@@ -78,7 +78,7 @@ const createD3Globe = (wrapper) => {
     .attr("d", geoPathGenerator)
     .style("stroke", "#9fb2ee")
     .style("stroke-width", "1px")
-    .style("fill", (d, i) => "#f1eeff");
+    .style("fill", "var(--color-primary)");
 
   //   timer(function (elapsed) {
   //     projection.rotate([
