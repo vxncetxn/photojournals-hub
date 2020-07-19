@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components"
+import { createGlobalStyle } from "styled-components";
 
 const Defaults = createGlobalStyle`
     :root {
@@ -31,7 +31,7 @@ const Defaults = createGlobalStyle`
 
     body {
         position: relative;
-        background-color: var(--color-tertiary);
+        background-color: #f6f9fc;
         // border: 1px solid red;
         overflow: hidden;
     }
@@ -44,6 +44,6 @@ const Defaults = createGlobalStyle`
         text-decoration: none;
         color: black;
     }
-`
+`;
 
-export default Defaults
+export default Defaults;

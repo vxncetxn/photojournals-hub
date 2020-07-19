@@ -1,14 +1,24 @@
-import React from "react"
+import React from "react";
+import styled from "styled-components";
 
-import Defaults from "../components/Defaults"
+import Defaults from "../components/Defaults";
+import Content from "../components/Content";
+import Globe from "../components/Globe";
+
+const Hero = styled.div`
+  display: flex;
+`;
 
 const IndexPage = () => {
   return (
     <>
       <Defaults />
-      <div>Hello</div>
+      <Hero>
+        <Content />
+        <Globe />
+      </Hero>
     </>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;
