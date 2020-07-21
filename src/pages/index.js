@@ -32,7 +32,7 @@ const IndexPage = () => {
       >
         {theme === "dark" ? <ShootingStars /> : null}
         <Content />
-        <Globe />
+        <Globe theme={theme} />
         <Celestial />
       </Hero>
     </>

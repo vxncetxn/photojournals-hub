@@ -1,12 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { select } from "d3-selection";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
-// import { easeQuadInOut } from "d3-ease";
 import { json } from "d3-fetch";
 import * as topojson from "topojson-client";
-// import countryShapes from "../world-geojson.json";
 
 /* SVG RENDERER CODE BITS - REMOVE AFTER MIGRATION FULLY COMPLETE */
 
@@ -169,8 +166,8 @@ let tourIdx = -1;
 const touredLocations = [
   { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
   { name: "Switzerland", tag: "europe2k19", coords: [8.5417, 47.3769] },
-  { name: "Poland", tag: "europe2k19", coords: [-100.0, 31] },
-  { name: "Portugal", tag: "europe2k19", coords: [8.6291, 41.1579] },
+  { name: "Poland", tag: "europe2k19", coords: [17.038538, 51.107883] },
+  { name: "Portugal", tag: "europe2k19", coords: [-8.61099, 41.14961] },
   { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
   { name: "Taiwan", tag: "taiwanexchange", coords: [120.9675, 24.8138] },
   { name: "Beijing", tag: "taiwanexchange", coords: [116.4074, 39.9042] },
@@ -198,7 +195,7 @@ const dpi = window.devicePixelRatio;
 const sphere = { type: "Sphere" };
 const projection = geoOrthographic().fitWidth(dimensions.boundedWidth, sphere);
 
-const createD3Globe = async (canvas) => {
+const createD3Globe = async (canvas, theme) => {
   const world = await json(
     "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
   );
@@ -209,9 +206,7 @@ const createD3Globe = async (canvas) => {
     (a, b) => a !== b
   );
 
-  const ctx = canvas.node().getContext("2d");
-  ctx.scale(dpi, dpi);
-  ctx.translate(dimensions.margins.left, dimensions.margins.top);
+  const ctx = canvas.getContext("2d");
 
   const geoPathGenerator = geoPath(projection, ctx);
 
@@ -231,22 +226,34 @@ const createD3Globe = async (canvas) => {
         return function (t) {
           projection.rotate(rotateIp(t));
           draw({
-            type: "LineString",
-            coordinates: [p1, arcIp(t)],
+            geo: {
+              type: "LineString",
+              coordinates: [p1, arcIp(t)],
+            },
+            color:
+              touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+                ? "#db7093"
+                : "#7b68ee",
           });
         };
       })
       .transition()
       .tween("render", () => (t) => {
         draw({
-          type: "LineString",
-          coordinates: [arcIp(t), p2],
+          geo: {
+            type: "LineString",
+            coordinates: [arcIp(t), p2],
+          },
+          color:
+            touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+              ? "#db7093"
+              : "#7b68ee",
         });
       })
       .on("end", step);
   }
 
-  function draw(linestring) {
+  function draw(arcInfo) {
     ctx.clearRect(
       -dimensions.margins.left,
       -dimensions.margins.top,
@@ -256,12 +263,12 @@ const createD3Globe = async (canvas) => {
 
     ctx.beginPath();
     geoPathGenerator(sphere);
-    ctx.fillStyle = "#dae7f1";
+    ctx.fillStyle = theme === "light" ? "#dae7f1" : "#0b0b41";
     ctx.fill();
 
     ctx.beginPath();
     geoPathGenerator(land);
-    ctx.fillStyle = "#c7dbea";
+    ctx.fillStyle = theme === "light" ? "#c7dbea" : "#0f0f57";
     ctx.fill();
     ctx.strokeStyle = "#7d96e8";
     ctx.lineWidth = 1;
@@ -274,10 +281,10 @@ const createD3Globe = async (canvas) => {
     ctx.stroke();
 
     ctx.beginPath();
-    geoPathGenerator(linestring);
+    geoPathGenerator(arcInfo.geo);
     ctx.fillStyle = "transparent";
     ctx.fill();
-    ctx.strokeStyle = "#db7093";
+    ctx.strokeStyle = arcInfo.color;
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -301,12 +308,18 @@ const createD3Globe = async (canvas) => {
   }
 };
 
-const GlobeComp = () => {
+const GlobeComp = ({ theme }) => {
   const globeRef = useRef();
 
   useEffect(() => {
-    createD3Globe(select(globeRef.current));
+    const ctx = globeRef.current.getContext("2d");
+    ctx.scale(dpi, dpi);
+    ctx.translate(dimensions.margins.left, dimensions.margins.top);
   }, []);
+
+  useEffect(() => {
+    createD3Globe(globeRef.current, theme);
+  }, [theme]);
 
   return (
     <GlobePanel>
