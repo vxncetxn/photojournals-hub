@@ -3,35 +3,157 @@ import styled from "styled-components";
 import { select } from "d3-selection";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
-import { easeQuadInOut } from "d3-ease";
+// import { easeQuadInOut } from "d3-ease";
+import { json } from "d3-fetch";
+import * as topojson from "topojson-client";
+// import countryShapes from "../world-geojson.json";
 
-import countryShapes from "../world-geojson.json";
+/* SVG RENDERER CODE BITS - REMOVE AFTER MIGRATION FULLY COMPLETE */
 
-let dimensions = {
-  width: window.innerWidth * 0.6,
-  margins: {
-    top: 50,
-    right: 150,
-    bottom: 50,
-    left: 150,
-  },
-};
+// const Globe = styled.svg`
+//   width: ${dimensions.width}px;
+//   height: ${dimensions.height}px;
 
-dimensions.boundedWidth =
-  dimensions.width - dimensions.margins.left - dimensions.margins.right;
+//   //   border: 5px solid green;
+// `;
 
-const sphere = { type: "Sphere" };
-const projection = geoOrthographic().fitWidth(dimensions.boundedWidth, sphere);
-projection.rotate([255, 0, 0]);
-const geoPathGenerator = geoPath(projection);
+// const geoPathGenerator = geoPath(projection);
 
-function isVisible(d) {
-  return geoPathGenerator({ type: "Point", coordinates: d });
-}
+// function isVisible(d) {
+//   return geoPathGenerator({ type: "Point", coordinates: d });
+// }
 
-dimensions.boundedHeight = geoPathGenerator.bounds(sphere)[1][1];
-dimensions.height =
-  dimensions.boundedHeight + dimensions.margins.top + dimensions.margins.bottom;
+// dimensions.boundedHeight = geoPathGenerator.bounds(sphere)[1][1];
+// dimensions.height =
+//   dimensions.boundedHeight + dimensions.margins.top + dimensions.margins.bottom;
+
+// const bounds = wrapper
+//   .append("g")
+//   .attr("width", dimensions.boundedWidth)
+//   .attr("height", dimensions.boundedHeight)
+//   .style(
+//     "transform",
+//     `translate(${dimensions.margins.left}px, ${dimensions.margins.top}px)`
+//   );
+
+// bounds
+//   .append("path")
+//   .datum(sphere)
+//   .attr("class", "sphere")
+//   .attr("d", geoPathGenerator)
+//   .style("fill", "var(--color-secondary");
+
+// const countries = bounds
+//   .selectAll(".country")
+//   .data(countryShapes.features)
+//   .enter()
+//   .append("path")
+//   .attr("class", "country")
+//   .attr("d", geoPathGenerator)
+//   .style("stroke", "#7d96e8")
+//   .style("stroke-width", "1px")
+//   .style("fill", "var(--color-primary)");
+
+// const locations = bounds
+//   .selectAll(".locations")
+//   .data(touredLocations)
+//   .enter()
+//   .append("svg")
+//   .attr("enable-background", "new 0 0 512 512")
+//   .attr("viewBox", "0 0 512 512")
+//   .attr("xmlns", "http://www.w3.org/2000/svg")
+//   .attr("x", (d) => projection(d.coords)[0])
+//   .attr("y", (d) => projection(d.coords)[1])
+//   .attr("width", 20)
+//   .attr("height", 20)
+//   .style("transform", "translate(-10px, -19px)")
+//   .html((d) =>
+//     d.name === "Singapore"
+//       ? `<path d="m376 30c-27.783 0-53.255 8.804-75.707 26.168-21.525 16.647-35.856 37.85-44.293 53.268-8.437-15.419-22.768-36.621-44.293-53.268-22.452-17.364-47.924-26.168-75.707-26.168-77.532 0-136 63.417-136 147.514 0 90.854 72.943 153.015 183.369 247.118 18.752 15.981 40.007 34.095 62.099 53.414 2.912 2.55 6.652 3.954 10.532 3.954s7.62-1.404 10.532-3.953c22.094-19.322 43.348-37.435 62.111-53.425 110.414-94.093 183.357-156.254 183.357-247.108 0-84.097-58.468-147.514-136-147.514z"/>`
+//       : `<path d="m441.554 133.088c-18.037-58.288-65.454-105.719-123.742-123.758-61.692-19.11-127.33-8.489-177.431 28.427-49.732 36.661-79.419 95.389-79.419 157.093 0 42.567 13.466 83.008 38.933 116.944l156.125 200.206 156.125-200.221c38.113-50.816 48.839-115.947 29.409-178.691zm-185.534 166.792c-57.908 0-105.031-47.123-105.031-105.031s47.123-105.031 105.031-105.031 105.031 47.123 105.031 105.031-47.123 105.031-105.031 105.031z"/><path d="m256.02 120.027c-41.365 0-75.022 33.457-75.022 74.822s33.657 75.022 75.022 75.022 75.022-33.657 75.022-75.022c.001-41.365-33.657-74.822-75.022-74.822z"/>`
+//   )
+//   .attr("fill", (d) => {
+//     if (d.name === "Singapore") {
+//       return "#d7443e";
+//     } else {
+//       switch (d.tag) {
+//         case "europe2k19":
+//           return "var(--color-accent-one)";
+//         case "taiwanexchange":
+//           return "var(--color-accent-two)";
+//         default:
+//           return "var(--color-accent-one)";
+//       }
+//     }
+//   })
+//   .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
+
+// const labels = bounds
+//   .selectAll(".locations")
+//   .data(touredLocations)
+//   .enter()
+//   .append("text")
+//   .text((d) => d.name)
+//   .attr("x", (d) => projection(d.coords)[0])
+//   .attr("y", (d) => projection(d.coords)[1] - 25)
+//   .style("font-family", "var(--font-primary)")
+//   .style("font-size", "12px")
+//   .style("fill", "var(--color-text)")
+//   .style("text-anchor", "middle")
+//   .style("opacity", (_, i) => (i === (tourIdx + 1) % 9 ? 1 : 0));
+
+// var arc = bounds
+//   .append("path")
+//   .datum([touredLocations[tourIdx % 9], touredLocations[(tourIdx + 1) % 9]])
+//   .attr("d", (d) =>
+//     geoPathGenerator({
+//       type: "LineString",
+//       coordinates: [d[0].coords, d[1].coords],
+//     })
+//   )
+//   .style("stroke", (d) => {
+//     switch (d[1].tag) {
+//       case "europe2k19":
+//         return "var(--color-accent-one)";
+//       case "taiwanexchange":
+//         return "var(--color-accent-two)";
+//       default:
+//         return "var(--color-accent-one)";
+//     }
+//   })
+//   .style("stroke-width", "2px")
+//   .style("fill", "transparent");
+
+// var arcLength = arc.node().getTotalLength();
+
+// arc
+//   .attr("stroke-dasharray", arcLength)
+//   .attr("stroke-dashoffset", arcLength)
+//   .transition()
+//   .delay(250)
+//   .duration(1250)
+//   .ease(easeQuadInOut)
+//   .attr("stroke-dashoffset", 0)
+//   .remove()
+//   .transition()
+//   .attr("stroke-dashoffset", -arcLength)
+//   .remove();
+
+// countries.attr("d", geoPathGenerator);
+// locations
+//   .attr("x", (d) => projection(d.coords)[0])
+//   .attr("y", (d) => projection(d.coords)[1])
+//   .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
+// labels
+//   .attr("x", (d) => projection(d.coords)[0])
+//   .attr("y", (d) => projection(d.coords)[1] - 25)
+//   .style("opacity", (d, i) => (i === (tourIdx + 1) % 9 ? 1 : 0));
+// arc.attr("d", (d) =>
+//   geoPathGenerator({
+//     type: "LineString",
+//     coordinates: [d[0].coords, d[1].coords],
+//   })
+// );
 
 const GlobePanel = styled.div`
   width: 60%;
@@ -39,23 +161,15 @@ const GlobePanel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  //   border: 1px solid blue;
 `;
 
-const Globe = styled.svg`
-  width: ${dimensions.width}px;
-  height: ${dimensions.height}px;
-
-  //   border: 5px solid green;
-`;
+const Globe = styled.canvas``;
 
 let tourIdx = -1;
-
 const touredLocations = [
   { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
   { name: "Switzerland", tag: "europe2k19", coords: [8.5417, 47.3769] },
-  { name: "Poland", tag: "europe2k19", coords: [17.0385, 51.1079] },
+  { name: "Poland", tag: "europe2k19", coords: [-100.0, 31] },
   { name: "Portugal", tag: "europe2k19", coords: [8.6291, 41.1579] },
   { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
   { name: "Taiwan", tag: "taiwanexchange", coords: [120.9675, 24.8138] },
@@ -64,151 +178,126 @@ const touredLocations = [
   { name: "Shanghai", tag: "taiwanexchange", coords: [121.4737, 31.2304] },
 ];
 
-const createD3Globe = (wrapper) => {
-  const bounds = wrapper
-    .append("g")
-    .attr("width", dimensions.boundedWidth)
-    .attr("height", dimensions.boundedHeight)
-    .style(
-      "transform",
-      `translate(${dimensions.margins.left}px, ${dimensions.margins.top}px)`
-    );
+let dimensions = {
+  width: window.innerWidth * 0.6,
+  height: window.innerHeight,
+  margins: {
+    top: 50,
+    right: 150,
+    bottom: 50,
+    left: 150,
+  },
+};
+dimensions.boundedWidth =
+  dimensions.width - dimensions.margins.left - dimensions.margins.right;
+dimensions.boundedHeight =
+  dimensions.height - dimensions.margins.top - dimensions.margins.bottom;
 
-  bounds
-    .append("path")
-    .datum(sphere)
-    .attr("class", "sphere")
-    .attr("d", geoPathGenerator)
-    .style("fill", "var(--color-secondary");
+const dpi = window.devicePixelRatio;
 
-  const countries = bounds
-    .selectAll(".country")
-    .data(countryShapes.features)
-    .enter()
-    .append("path")
-    .attr("class", "country")
-    .attr("d", geoPathGenerator)
-    .style("stroke", "#7d96e8")
-    .style("stroke-width", "1px")
-    .style("fill", "var(--color-primary)");
+const sphere = { type: "Sphere" };
+const projection = geoOrthographic().fitWidth(dimensions.boundedWidth, sphere);
 
-  const locations = bounds
-    .selectAll(".locations")
-    .data(touredLocations)
-    .enter()
-    .append("svg")
-    .attr("enable-background", "new 0 0 512 512")
-    .attr("viewBox", "0 0 512 512")
-    .attr("xmlns", "http://www.w3.org/2000/svg")
-    .attr("x", (d) => projection(d.coords)[0])
-    .attr("y", (d) => projection(d.coords)[1])
-    .attr("width", 20)
-    .attr("height", 20)
-    .style("transform", "translate(-10px, -19px)")
-    .html((d) =>
-      d.name === "Singapore"
-        ? `<path d="m376 30c-27.783 0-53.255 8.804-75.707 26.168-21.525 16.647-35.856 37.85-44.293 53.268-8.437-15.419-22.768-36.621-44.293-53.268-22.452-17.364-47.924-26.168-75.707-26.168-77.532 0-136 63.417-136 147.514 0 90.854 72.943 153.015 183.369 247.118 18.752 15.981 40.007 34.095 62.099 53.414 2.912 2.55 6.652 3.954 10.532 3.954s7.62-1.404 10.532-3.953c22.094-19.322 43.348-37.435 62.111-53.425 110.414-94.093 183.357-156.254 183.357-247.108 0-84.097-58.468-147.514-136-147.514z"/>`
-        : `<path d="m441.554 133.088c-18.037-58.288-65.454-105.719-123.742-123.758-61.692-19.11-127.33-8.489-177.431 28.427-49.732 36.661-79.419 95.389-79.419 157.093 0 42.567 13.466 83.008 38.933 116.944l156.125 200.206 156.125-200.221c38.113-50.816 48.839-115.947 29.409-178.691zm-185.534 166.792c-57.908 0-105.031-47.123-105.031-105.031s47.123-105.031 105.031-105.031 105.031 47.123 105.031 105.031-47.123 105.031-105.031 105.031z"/><path d="m256.02 120.027c-41.365 0-75.022 33.457-75.022 74.822s33.657 75.022 75.022 75.022 75.022-33.657 75.022-75.022c.001-41.365-33.657-74.822-75.022-74.822z"/>`
-    )
-    .attr("fill", (d) => {
-      if (d.name === "Singapore") {
-        return "#d7443e";
-      } else {
-        switch (d.tag) {
-          case "europe2k19":
-            return "var(--color-accent-one)";
-          case "taiwanexchange":
-            return "var(--color-accent-two)";
-          default:
-            return "var(--color-accent-one)";
-        }
-      }
-    })
-    .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
+const createD3Globe = async (canvas) => {
+  const world = await json(
+    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
+  );
+  const land = topojson.feature(world, world.objects.land);
+  const borders = topojson.mesh(
+    world,
+    world.objects.countries,
+    (a, b) => a !== b
+  );
 
-  const labels = bounds
-    .selectAll(".locations")
-    .data(touredLocations)
-    .enter()
-    .append("text")
-    .text((d) => d.name)
-    .attr("x", (d) => projection(d.coords)[0])
-    .attr("y", (d) => projection(d.coords)[1] - 25)
-    .style("font-family", "var(--font-primary)")
-    .style("font-size", "12px")
-    .style("fill", "var(--color-text)")
-    .style("text-anchor", "middle")
-    .style("opacity", (_, i) => (i === (tourIdx + 1) % 9 ? 1 : 0));
+  const ctx = canvas.node().getContext("2d");
+  ctx.scale(dpi, dpi);
+  ctx.translate(dimensions.margins.left, dimensions.margins.top);
 
-  // step();
+  const geoPathGenerator = geoPath(projection, ctx);
+
+  step();
 
   function step() {
     tourIdx++;
 
-    var arc = bounds
-      .append("path")
-      .datum([touredLocations[tourIdx % 9], touredLocations[(tourIdx + 1) % 9]])
-      .attr("d", (d) =>
-        geoPathGenerator({
-          type: "LineString",
-          coordinates: [d[0].coords, d[1].coords],
-        })
-      )
-      .style("stroke", (d) => {
-        switch (d[1].tag) {
-          case "europe2k19":
-            return "var(--color-accent-one)";
-          case "taiwanexchange":
-            return "var(--color-accent-two)";
-          default:
-            return "var(--color-accent-one)";
-        }
-      })
-      .style("stroke-width", "2px")
-      .style("fill", "transparent");
-
-    var arcLength = arc.node().getTotalLength();
-
-    arc
-      .attr("stroke-dasharray", arcLength)
-      .attr("stroke-dashoffset", arcLength)
-      .transition()
-      .delay(250)
-      .duration(1250)
-      .ease(easeQuadInOut)
-      .attr("stroke-dashoffset", 0)
-      .remove()
-      .transition()
-      .attr("stroke-dashoffset", -arcLength)
-      .remove();
+    const p1 = touredLocations[tourIdx % 9].coords;
+    const p2 = touredLocations[(tourIdx + 1) % 9].coords;
+    const rotateIp = geoInterpolate([-p1[0], -p1[1]], [-p2[0], -p2[1]]);
+    const arcIp = geoInterpolate(p1, p2);
 
     transition()
-      .delay(250)
       .duration(1250)
       .tween("rotate", function () {
-        var point = touredLocations[(tourIdx + 1) % 9].coords,
-          rotate = geoInterpolate(projection.rotate(), [-point[0], -point[1]]);
         return function (t) {
-          projection.rotate(rotate(t));
-          countries.attr("d", geoPathGenerator);
-          locations
-            .attr("x", (d) => projection(d.coords)[0])
-            .attr("y", (d) => projection(d.coords)[1])
-            .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
-          labels
-            .attr("x", (d) => projection(d.coords)[0])
-            .attr("y", (d) => projection(d.coords)[1] - 25)
-            .style("opacity", (d, i) => (i === (tourIdx + 1) % 9 ? 1 : 0));
-          arc.attr("d", (d) =>
-            geoPathGenerator({
-              type: "LineString",
-              coordinates: [d[0].coords, d[1].coords],
-            })
-          );
+          projection.rotate(rotateIp(t));
+          draw({
+            type: "LineString",
+            coordinates: [p1, arcIp(t)],
+          });
         };
       })
       .transition()
+      .tween("render", () => (t) => {
+        draw({
+          type: "LineString",
+          coordinates: [arcIp(t), p2],
+        });
+      })
       .on("end", step);
+  }
+
+  function draw(linestring) {
+    ctx.clearRect(
+      -dimensions.margins.left,
+      -dimensions.margins.top,
+      dimensions.width,
+      dimensions.height
+    );
+
+    ctx.beginPath();
+    geoPathGenerator(sphere);
+    ctx.fillStyle = "#dae7f1";
+    ctx.fill();
+
+    ctx.beginPath();
+    geoPathGenerator(land);
+    ctx.fillStyle = "#c7dbea";
+    ctx.fill();
+    ctx.strokeStyle = "#7d96e8";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    geoPathGenerator(borders);
+    ctx.strokeStyle = "#7d96e8";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    geoPathGenerator(linestring);
+    ctx.fillStyle = "transparent";
+    ctx.fill();
+    ctx.strokeStyle = "#db7093";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    touredLocations.forEach((loc) => {
+      ctx.beginPath();
+      geoPathGenerator({ type: "Point", coordinates: loc.coords });
+      switch (loc.tag) {
+        case "europe2k19":
+          ctx.fillStyle = "#db7093";
+          break;
+        case "taiwanexchange":
+          ctx.fillStyle = "#7b68ee";
+          break;
+        default:
+          ctx.fillStyle = "#db7093";
+      }
+      ctx.fill();
+    });
+
+    return ctx.canvas;
   }
 };
 
@@ -221,7 +310,11 @@ const GlobeComp = () => {
 
   return (
     <GlobePanel>
-      <Globe ref={globeRef} />
+      <Globe
+        ref={globeRef}
+        width={dimensions.width * dpi}
+        height={dimensions.height * dpi}
+      />
     </GlobePanel>
   );
 };

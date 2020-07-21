@@ -12,7 +12,7 @@ const Hero = styled.div`
 `;
 
 const IndexPage = () => {
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     document.documentElement.setAttribute("theme", theme);
