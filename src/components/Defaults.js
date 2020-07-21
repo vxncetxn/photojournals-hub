@@ -17,7 +17,8 @@ const Defaults = createGlobalStyle`
         --color-accent-one: #db7093;
         --color-accent-two: #7b68ee;
 
-        --bs-celestial: 0px 0px 40px 15px #fdf2b4;
+        --bs-celestial-from: 0px 0px 40px 15px #fdf2b4;
+        --bs-celestial-to: 0px 0px 40px 45px #fdf2b4;
 
         --color-white: #fcfcfc;
         --color-gray: #cccccc;
@@ -30,7 +31,8 @@ const Defaults = createGlobalStyle`
         --color-text: #f5fbff;
         --color-celestial: #ffffff;
 
-        --bs-celestial: 0px 0px 40px 2px #ffffff;
+        --bs-celestial-from: 0px 0px 40px 2px #ffffff;
+        --bs-celestial-to: 0px 0px 40px 10px #ffffff;
     }
 
     * {
