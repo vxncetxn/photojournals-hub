@@ -2,14 +2,14 @@ import React from "react";
 import styled from "styled-components";
 
 const ContentPanel = styled.div`
-  width: 30%;
-  padding: 50px 60px;
+  width: 40%;
+  padding: 100px 75px;
   font-family: var(--font-secondary);
   font-size: 20px;
   color: var(--color-text);
   transition: color 0.3s ease-out;
 
-  //   border: 1px solid red;
+  // border: 1px solid red;
 `;
 
 const Header = styled.h1`
@@ -42,12 +42,24 @@ const Intro = styled.p`
   }
 `;
 
-const Content = styled.div`
+const Entries = styled.ul`
   margin-top: 50px;
 
-  & > * + * {
+  & a {
+    color: inherit;
+  }
+
+  & > li + li {
     margin-top: 10px;
   }
+`;
+
+const Badge = styled.span`
+  display: inline-block;
+  width: 20px;
+  height: 12px;
+  background-color: ${(props) => props.color};
+  margin-left: 10px;
 `;
 
 const ContentComp = () => {
@@ -62,10 +74,16 @@ const ContentComp = () => {
         This is a little hub for my photo albums from my past and recent
         travels, enjoy!
       </Intro>
-      <Content>
-        <div>#europe2k19</div>
-        <div>#taiwanexchange</div>
-      </Content>
+      <Entries>
+        <li>
+          <a href="#">#europe2k19</a>
+          <Badge color="var(--color-accent-one)" />
+        </li>
+        <li>
+          <a href="#">#taiwanexchange</a>
+          <Badge color="var(--color-accent-two)" />
+        </li>
+      </Entries>
     </ContentPanel>
   );
 };

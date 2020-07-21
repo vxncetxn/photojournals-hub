@@ -12,7 +12,7 @@ const Hero = styled.div`
 const Celestial = styled.div`
   position: absolute;
   top: 40px;
-  right: 250px;
+  right: 200px;
   width: 150px;
   height: 150px;
   border-radius: 50%;

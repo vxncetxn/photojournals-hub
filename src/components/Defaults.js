@@ -8,11 +8,14 @@ const Defaults = createGlobalStyle`
         --font-primary: Rubik;
         --font-secondary: Karla;
 
-        --color-primary: #ccebff;
-        --color-secondary: #e6f5ff;
-        --color-bg: #f5fbff;
+        --color-primary: #c7dbea;
+        --color-secondary: #dae7f1;
+        --color-bg: #ecf3f8;
         --color-text: #00060a;
         --color-celestial: #fdf2b4;
+
+        --color-accent-one: #db7093;
+        --color-accent-two: #7b68ee;
 
         --bs-celestial: 0px 0px 40px 15px #fdf2b4;
 
@@ -21,9 +24,9 @@ const Defaults = createGlobalStyle`
     }
 
     [theme="dark"] {
-        --color-primary: #001f33;
-        --color-secondary: #000f1a;
-        --color-bg: #00060a;
+        --color-primary: #0f0f57;
+        --color-secondary: #0b0b41;
+        --color-bg: #07072c;
         --color-text: #f5fbff;
         --color-celestial: #ffffff;
 
