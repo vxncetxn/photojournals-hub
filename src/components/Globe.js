@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { select } from "d3-selection";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
+import { easeQuadInOut } from "d3-ease";
 
 import countryShapes from "../world-geojson.json";
 
@@ -104,21 +105,23 @@ const createD3Globe = (wrapper) => {
     .attr("width", 20)
     .attr("height", 20)
     .style("transform", "translate(-10px, -19px)")
-    .html(
-      `<path d="m441.554 133.088c-18.037-58.288-65.454-105.719-123.742-123.758-61.692-19.11-127.33-8.489-177.431 28.427-49.732 36.661-79.419 95.389-79.419 157.093 0 42.567 13.466 83.008 38.933 116.944l156.125 200.206 156.125-200.221c38.113-50.816 48.839-115.947 29.409-178.691zm-185.534 166.792c-57.908 0-105.031-47.123-105.031-105.031s47.123-105.031 105.031-105.031 105.031 47.123 105.031 105.031-47.123 105.031-105.031 105.031z"/><path d="m256.02 120.027c-41.365 0-75.022 33.457-75.022 74.822s33.657 75.022 75.022 75.022 75.022-33.657 75.022-75.022c.001-41.365-33.657-74.822-75.022-74.822z"/>`
+    .html((d) =>
+      d.name === "Singapore"
+        ? `<path d="m376 30c-27.783 0-53.255 8.804-75.707 26.168-21.525 16.647-35.856 37.85-44.293 53.268-8.437-15.419-22.768-36.621-44.293-53.268-22.452-17.364-47.924-26.168-75.707-26.168-77.532 0-136 63.417-136 147.514 0 90.854 72.943 153.015 183.369 247.118 18.752 15.981 40.007 34.095 62.099 53.414 2.912 2.55 6.652 3.954 10.532 3.954s7.62-1.404 10.532-3.953c22.094-19.322 43.348-37.435 62.111-53.425 110.414-94.093 183.357-156.254 183.357-247.108 0-84.097-58.468-147.514-136-147.514z"/>`
+        : `<path d="m441.554 133.088c-18.037-58.288-65.454-105.719-123.742-123.758-61.692-19.11-127.33-8.489-177.431 28.427-49.732 36.661-79.419 95.389-79.419 157.093 0 42.567 13.466 83.008 38.933 116.944l156.125 200.206 156.125-200.221c38.113-50.816 48.839-115.947 29.409-178.691zm-185.534 166.792c-57.908 0-105.031-47.123-105.031-105.031s47.123-105.031 105.031-105.031 105.031 47.123 105.031 105.031-47.123 105.031-105.031 105.031z"/><path d="m256.02 120.027c-41.365 0-75.022 33.457-75.022 74.822s33.657 75.022 75.022 75.022 75.022-33.657 75.022-75.022c.001-41.365-33.657-74.822-75.022-74.822z"/>`
     )
-    // .append("circle")
-    // .attr("cx", (d) => projection(d.coords)[0])
-    // .attr("cy", (d) => projection(d.coords)[1])
-    // .attr("r", 5)
     .attr("fill", (d) => {
-      switch (d.tag) {
-        case "europe2k19":
-          return "var(--color-accent-one)";
-        case "taiwanexchange":
-          return "var(--color-accent-two)";
-        default:
-          return "var(--color-accent-one)";
+      if (d.name === "Singapore") {
+        return "#d7443e";
+      } else {
+        switch (d.tag) {
+          case "europe2k19":
+            return "var(--color-accent-one)";
+          case "taiwanexchange":
+            return "var(--color-accent-two)";
+          default:
+            return "var(--color-accent-one)";
+        }
       }
     })
     .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
@@ -172,6 +175,7 @@ const createD3Globe = (wrapper) => {
       .transition()
       .delay(250)
       .duration(1250)
+      .ease(easeQuadInOut)
       .attr("stroke-dashoffset", 0)
       .remove()
       .transition()
@@ -190,8 +194,6 @@ const createD3Globe = (wrapper) => {
           locations
             .attr("x", (d) => projection(d.coords)[0])
             .attr("y", (d) => projection(d.coords)[1])
-            // .attr("cx", (d) => projection(d.coords)[0])
-            // .attr("cy", (d) => projection(d.coords)[1])
             .style("opacity", (d) => (isVisible(d.coords) ? 1 : 0));
           labels
             .attr("x", (d) => projection(d.coords)[0])
