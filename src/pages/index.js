@@ -5,13 +5,14 @@ import Defaults from "../components/Defaults";
 import Content from "../components/Content";
 import Globe from "../components/Globe";
 import Celestial from "../components/Celestial";
+import ShootingStars from "../components/ShootingStars";
 
 const Hero = styled.div`
   display: flex;
 `;
 
 const IndexPage = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     document.documentElement.setAttribute("theme", theme);
@@ -29,6 +30,7 @@ const IndexPage = () => {
           }
         }}
       >
+        {theme === "dark" ? <ShootingStars /> : null}
         <Content />
         <Globe />
         <Celestial />
