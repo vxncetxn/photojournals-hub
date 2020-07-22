@@ -2,30 +2,61 @@ import React from "react";
 import styled from "styled-components";
 
 const ContentPanel = styled.div`
+  position: relative;
   width: 40%;
-  padding: 100px 75px;
+  padding: 85px 75px;
   font-family: var(--font-secondary);
   font-size: 20px;
   color: var(--color-text);
   transition: color 0.3s ease-out;
 
-  // border: 1px solid red;
+  z-index: 999;
+
+  @media (max-width: 1200px) {
+    padding: 75px 65px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 896px) {
+    width: 60%;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const Header = styled.h1`
   font-family: var(--font-primary);
   font-size: 42px;
   font-weight: normal;
+
+  & > span {
+    color: var(--color-h1);
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 36px;
+  }
 `;
 
 const SubHeader = styled.h2`
   font-size: 32px;
   font-weight: normal;
   margin-top: 10px;
+
+  & > span {
+    text-decoration: underline dotted;
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 26px;
+  }
 `;
 
 const Intro = styled.p`
   font-size: 24px;
+  line-height: 1.6;
   position: relative;
   margin-top: 50px;
 
@@ -33,17 +64,21 @@ const Intro = styled.p`
     content: "“";
     position: absolute;
     left: -15px;
-    top: -50px;
+    top: -75px;
     font-family: var(--font-primary);
     font-size: 150px;
-    color: var(--color-primary);
+    color: var(--color-apostrophe);
     z-index: -1;
     transition: color 0.3s ease-out;
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 22px;
   }
 `;
 
 const Entries = styled.ul`
-  margin-top: 50px;
+  margin-top: 30px;
 
   & a {
     color: inherit;
@@ -65,14 +100,16 @@ const Badge = styled.span`
 const ContentComp = () => {
   return (
     <ContentPanel>
-      <Header>photojournals.dev</Header>
+      <Header>
+        <span>photojournals</span>.dev
+      </Header>
       <SubHeader>
-        by <span style={{ textDecoration: "underline dotted" }}>vance tan</span>
-        .
+        by <span>vance tan</span>.
       </SubHeader>
       <Intro>
-        This is a little hub for my photo albums from my past and recent
-        travels, enjoy!
+        This is a place where I store the photo journals curated from the
+        experiences on my trips and journeys. Each journal is crafted in a
+        unique style of its own, enjoy!
       </Intro>
       <Entries>
         <li>

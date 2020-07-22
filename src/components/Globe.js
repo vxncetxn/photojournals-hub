@@ -1,9 +1,209 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
 import { json } from "d3-fetch";
 import * as topojson from "topojson-client";
+
+let tourIdx = -1;
+const touredLocations = [
+  { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
+  { name: "Switzerland", tag: "europe2k19", coords: [8.5417, 47.3769] },
+  { name: "Poland", tag: "europe2k19", coords: [17.038538, 51.107883] },
+  { name: "Portugal", tag: "europe2k19", coords: [-8.61099, 41.14961] },
+  { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
+  { name: "Taiwan", tag: "taiwanexchange", coords: [120.9675, 24.8138] },
+  { name: "Beijing", tag: "taiwanexchange", coords: [116.4074, 39.9042] },
+  { name: "Luoyang", tag: "taiwanexchange", coords: [112.4539, 34.6202] },
+  { name: "Shanghai", tag: "taiwanexchange", coords: [121.4737, 31.2304] },
+];
+
+let dimensions = {
+  height: window.innerHeight,
+  translateX: 150,
+  translateY: 150,
+};
+
+if (window.innerWidth > 1200) {
+  dimensions.width = 1000;
+} else if (window.innerWidth > 896) {
+  dimensions.width = 900;
+} else if (window.innerWidth > 600) {
+  dimensions.width = 750;
+  dimensions.translateY = 200;
+} else {
+  dimensions.width = 550;
+  dimensions.translateY = 300;
+}
+
+const Globe = styled.canvas`
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
+
+const dpi = window.devicePixelRatio;
+const sphere = { type: "Sphere" };
+
+const createD3Globe = async (canvas, theme) => {
+  const world = await json(
+    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
+  );
+  const land = topojson.feature(world, world.objects.land);
+  const borders = topojson.mesh(
+    world,
+    world.objects.countries,
+    (a, b) => a !== b
+  );
+  const projection = geoOrthographic().fitWidth(dimensions.width, sphere);
+
+  const ctx = canvas.getContext("2d");
+  ctx.canvas.width = dimensions.width;
+  ctx.canvas.height = dimensions.height;
+  ctx.translate(dimensions.translateX, dimensions.translateY);
+
+  const geoPathGenerator = geoPath(projection, ctx);
+
+  step();
+
+  function step() {
+    tourIdx++;
+
+    const p1 = touredLocations[tourIdx % 9].coords;
+    const p2 = touredLocations[(tourIdx + 1) % 9].coords;
+    const rotateIp = geoInterpolate([-p1[0], -p1[1]], [-p2[0], -p2[1]]);
+    const arcIp = geoInterpolate(p1, p2);
+
+    transition()
+      .duration(1250)
+      .tween("rotate", function () {
+        return function (t) {
+          projection.rotate(rotateIp(t));
+          draw({
+            geo: {
+              type: "LineString",
+              coordinates: [p1, arcIp(t)],
+            },
+            color:
+              touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+                ? "#db7093"
+                : "#7b68ee",
+          });
+        };
+      })
+      .transition()
+      .tween("render", () => (t) => {
+        draw({
+          geo: {
+            type: "LineString",
+            coordinates: [arcIp(t), p2],
+          },
+          color:
+            touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+              ? "#db7093"
+              : "#7b68ee",
+        });
+      })
+      .on("end", step);
+  }
+
+  function draw(arcInfo) {
+    ctx.clearRect(
+      -dimensions.translateX,
+      -dimensions.translateY,
+      dimensions.width,
+      dimensions.height
+    );
+
+    ctx.beginPath();
+    geoPathGenerator(sphere);
+    ctx.fillStyle = theme === "light" ? "#dae7f1" : "#0b0b41";
+    ctx.fill();
+
+    ctx.beginPath();
+    geoPathGenerator(land);
+    ctx.fillStyle = theme === "light" ? "#c7dbea" : "#0f0f57";
+    ctx.fill();
+    ctx.strokeStyle = "#7d96e8";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    geoPathGenerator(borders);
+    ctx.strokeStyle = "#7d96e8";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    geoPathGenerator(arcInfo.geo);
+    ctx.fillStyle = "transparent";
+    ctx.fill();
+    ctx.strokeStyle = arcInfo.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    touredLocations.forEach((loc) => {
+      ctx.beginPath();
+      geoPathGenerator({ type: "Point", coordinates: loc.coords });
+      switch (loc.tag) {
+        case "europe2k19":
+          ctx.fillStyle = "#db7093";
+          break;
+        case "taiwanexchange":
+          ctx.fillStyle = "#7b68ee";
+          break;
+        default:
+          ctx.fillStyle = "#db7093";
+      }
+      ctx.fill();
+    });
+
+    return ctx.canvas;
+  }
+};
+
+const GlobeComp = ({ theme }) => {
+  const globeRef = useRef();
+  const [screenSize, setScreenSize] = useState(() => {
+    if (window.innerWidth > 1200) {
+      return "desktop-large";
+    } else if (window.innerWidth > 896) {
+      return "desktop-small";
+    } else if (window.innerWidth > 600) {
+      return "mobile-large";
+    } else {
+      return "mobile-small";
+    }
+  });
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 1200) {
+        dimensions.width = 1000;
+        setScreenSize("desktop-large");
+      } else if (window.innerWidth > 896) {
+        dimensions.width = 900;
+        setScreenSize("desktop-small");
+      } else if (window.innerWidth > 600) {
+        dimensions.width = 750;
+        dimensions.translateY = 200;
+        setScreenSize("mobile-large");
+      } else {
+        dimensions.width = 550;
+        dimensions.translateY = 300;
+        setScreenSize("mobile-small");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    createD3Globe(globeRef.current, theme);
+  }, [theme, screenSize]);
+
+  return <Globe ref={globeRef} />;
+};
+
+export default GlobeComp;
 
 /* SVG RENDERER CODE BITS - REMOVE AFTER MIGRATION FULLY COMPLETE */
 
@@ -151,185 +351,3 @@ import * as topojson from "topojson-client";
 //     coordinates: [d[0].coords, d[1].coords],
 //   })
 // );
-
-const GlobePanel = styled.div`
-  width: 60%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Globe = styled.canvas``;
-
-let tourIdx = -1;
-const touredLocations = [
-  { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
-  { name: "Switzerland", tag: "europe2k19", coords: [8.5417, 47.3769] },
-  { name: "Poland", tag: "europe2k19", coords: [17.038538, 51.107883] },
-  { name: "Portugal", tag: "europe2k19", coords: [-8.61099, 41.14961] },
-  { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
-  { name: "Taiwan", tag: "taiwanexchange", coords: [120.9675, 24.8138] },
-  { name: "Beijing", tag: "taiwanexchange", coords: [116.4074, 39.9042] },
-  { name: "Luoyang", tag: "taiwanexchange", coords: [112.4539, 34.6202] },
-  { name: "Shanghai", tag: "taiwanexchange", coords: [121.4737, 31.2304] },
-];
-
-let dimensions = {
-  width: window.innerWidth * 0.6,
-  height: window.innerHeight,
-  margins: {
-    top: 50,
-    right: 150,
-    bottom: 50,
-    left: 150,
-  },
-};
-dimensions.boundedWidth =
-  dimensions.width - dimensions.margins.left - dimensions.margins.right;
-dimensions.boundedHeight =
-  dimensions.height - dimensions.margins.top - dimensions.margins.bottom;
-
-const dpi = window.devicePixelRatio;
-
-const sphere = { type: "Sphere" };
-const projection = geoOrthographic().fitWidth(dimensions.boundedWidth, sphere);
-
-const createD3Globe = async (canvas, theme) => {
-  const world = await json(
-    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
-  );
-  const land = topojson.feature(world, world.objects.land);
-  const borders = topojson.mesh(
-    world,
-    world.objects.countries,
-    (a, b) => a !== b
-  );
-
-  const ctx = canvas.getContext("2d");
-
-  const geoPathGenerator = geoPath(projection, ctx);
-
-  step();
-
-  function step() {
-    tourIdx++;
-
-    const p1 = touredLocations[tourIdx % 9].coords;
-    const p2 = touredLocations[(tourIdx + 1) % 9].coords;
-    const rotateIp = geoInterpolate([-p1[0], -p1[1]], [-p2[0], -p2[1]]);
-    const arcIp = geoInterpolate(p1, p2);
-
-    transition()
-      .duration(1250)
-      .tween("rotate", function () {
-        return function (t) {
-          projection.rotate(rotateIp(t));
-          draw({
-            geo: {
-              type: "LineString",
-              coordinates: [p1, arcIp(t)],
-            },
-            color:
-              touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
-                ? "#db7093"
-                : "#7b68ee",
-          });
-        };
-      })
-      .transition()
-      .tween("render", () => (t) => {
-        draw({
-          geo: {
-            type: "LineString",
-            coordinates: [arcIp(t), p2],
-          },
-          color:
-            touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
-              ? "#db7093"
-              : "#7b68ee",
-        });
-      })
-      .on("end", step);
-  }
-
-  function draw(arcInfo) {
-    ctx.clearRect(
-      -dimensions.margins.left,
-      -dimensions.margins.top,
-      dimensions.width,
-      dimensions.height
-    );
-
-    ctx.beginPath();
-    geoPathGenerator(sphere);
-    ctx.fillStyle = theme === "light" ? "#dae7f1" : "#0b0b41";
-    ctx.fill();
-
-    ctx.beginPath();
-    geoPathGenerator(land);
-    ctx.fillStyle = theme === "light" ? "#c7dbea" : "#0f0f57";
-    ctx.fill();
-    ctx.strokeStyle = "#7d96e8";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.beginPath();
-    geoPathGenerator(borders);
-    ctx.strokeStyle = "#7d96e8";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.beginPath();
-    geoPathGenerator(arcInfo.geo);
-    ctx.fillStyle = "transparent";
-    ctx.fill();
-    ctx.strokeStyle = arcInfo.color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    touredLocations.forEach((loc) => {
-      ctx.beginPath();
-      geoPathGenerator({ type: "Point", coordinates: loc.coords });
-      switch (loc.tag) {
-        case "europe2k19":
-          ctx.fillStyle = "#db7093";
-          break;
-        case "taiwanexchange":
-          ctx.fillStyle = "#7b68ee";
-          break;
-        default:
-          ctx.fillStyle = "#db7093";
-      }
-      ctx.fill();
-    });
-
-    return ctx.canvas;
-  }
-};
-
-const GlobeComp = ({ theme }) => {
-  const globeRef = useRef();
-
-  useEffect(() => {
-    const ctx = globeRef.current.getContext("2d");
-    ctx.scale(dpi, dpi);
-    ctx.translate(dimensions.margins.left, dimensions.margins.top);
-  }, []);
-
-  useEffect(() => {
-    createD3Globe(globeRef.current, theme);
-  }, [theme]);
-
-  return (
-    <GlobePanel>
-      <Globe
-        ref={globeRef}
-        width={dimensions.width * dpi}
-        height={dimensions.height * dpi}
-      />
-    </GlobePanel>
-  );
-};
-
-export default GlobeComp;
