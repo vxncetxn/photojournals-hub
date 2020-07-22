@@ -9,14 +9,6 @@ import ShootingStars from "../components/ShootingStars";
 
 const Hero = styled.div`
   position: relative;
-  // display: flex;
-
-  // border: 5px solid green;
-
-  @media (max-width: 896px) {
-    // border: 2px solid red;
-    // flex-direction: column-reverse;
-  }
 `;
 
 const IndexPage = () => {

@@ -21,18 +21,19 @@ const touredLocations = [
 let dimensions = {
   height: window.innerHeight,
   translateX: 150,
-  translateY: 150,
 };
 
 if (window.innerWidth > 1200) {
   dimensions.width = 1000;
+  dimensions.translateY = 150;
 } else if (window.innerWidth > 896) {
   dimensions.width = 900;
+  dimensions.translateY = 150;
 } else if (window.innerWidth > 600) {
   dimensions.width = 750;
   dimensions.translateY = 200;
 } else {
-  dimensions.width = 550;
+  dimensions.width = 500;
   dimensions.translateY = 300;
 }
 
@@ -180,16 +181,18 @@ const GlobeComp = ({ theme }) => {
     window.addEventListener("resize", () => {
       if (window.innerWidth > 1200) {
         dimensions.width = 1000;
+        dimensions.translateY = 150;
         setScreenSize("desktop-large");
       } else if (window.innerWidth > 896) {
         dimensions.width = 900;
+        dimensions.translateY = 150;
         setScreenSize("desktop-small");
       } else if (window.innerWidth > 600) {
         dimensions.width = 750;
         dimensions.translateY = 200;
         setScreenSize("mobile-large");
       } else {
-        dimensions.width = 550;
+        dimensions.width = 500;
         dimensions.translateY = 300;
         setScreenSize("mobile-small");
       }

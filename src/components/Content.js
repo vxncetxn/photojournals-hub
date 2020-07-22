@@ -23,6 +23,8 @@ const ContentPanel = styled.div`
 
   @media (max-width: 600px) {
     width: 100%;
+    padding: 50px 30px;
+    font-size: 16px;
   }
 `;
 
@@ -38,6 +40,10 @@ const Header = styled.h1`
   @media (max-width: 1200px) {
     font-size: 36px;
   }
+
+  @media (max-width: 600px) {
+    font-size: 30px;
+  }
 `;
 
 const SubHeader = styled.h2`
@@ -51,6 +57,10 @@ const SubHeader = styled.h2`
 
   @media (max-width: 1200px) {
     font-size: 26px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 20px;
   }
 `;
 
@@ -74,6 +84,10 @@ const Intro = styled.p`
 
   @media (max-width: 1200px) {
     font-size: 22px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 20px;
   }
 `;
 
