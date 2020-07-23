@@ -23,7 +23,7 @@ const Stars = styled.div`
   position: absolute;
   left: 50%;
   top: -10%;
-  z-index: -1;
+  z-index: -2;
   width: 400px;
   height: 100px;
   // transform: rotate(-30deg);

@@ -10,7 +10,7 @@ const ContentPanel = styled.div`
   color: var(--color-text);
   transition: color 0.3s ease-out;
 
-  z-index: 999;
+  z-index: 1;
 
   @media (max-width: 1200px) {
     padding: 75px 65px;

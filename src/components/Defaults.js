@@ -10,35 +10,26 @@ const Defaults = createGlobalStyle`
 
         --color-h1: #5993c0; //55%
         --color-apostrophe: #b5cfe3; //80%
-
-        // --color-primary: #c7dbea;
-        // --color-secondary: #dae7f1;
         --color-bg: #ecf3f8;
         --color-text: #00060a;
-        --color-celestial: #fdf2b4;
+        --color-celestial: #fbf2ba;
 
         --color-accent-one: #db7093;
         --color-accent-two: #7b68ee;
 
-        --bs-celestial-from: 0px 0px 40px 15px #fdf2b4;
-        --bs-celestial-to: 0px 0px 40px 45px #fdf2b4;
-
-        --color-white: #fcfcfc;
-        --color-gray: #cccccc;
+        --bs-celestial-from: 0px 0px 40px 15px #fbf2ba;
+        --bs-celestial-to: 0px 0px 40px 45px #fbf2ba;
     }
 
     [theme="dark"] {
         --color-h1: #3b3bde; //55%
         --color-apostrophe: #161683; //30%
-
-        // --color-primary: #0f0f57;
-        // --color-secondary: #0b0b41;
         --color-bg: #07072c;
         --color-text: #f5fbff;
-        --color-celestial: #ffffff;
+        --color-celestial: #e6e6ea;
 
-        --bs-celestial-from: 0px 0px 40px 2px #ffffff;
-        --bs-celestial-to: 0px 0px 40px 10px #ffffff;
+        --bs-celestial-from: 0px 0px 40px 2px #e6e6ea;
+        --bs-celestial-to: 0px 0px 40px 10px #e6e6ea;
     }
 
     * {
