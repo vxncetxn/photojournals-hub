@@ -12,11 +12,12 @@ const touredLocations = [
   { name: "Switzerland", tag: "europe2k19", coords: [8.5417, 47.3769] },
   { name: "Poland", tag: "europe2k19", coords: [17.038538, 51.107883] },
   { name: "Portugal", tag: "europe2k19", coords: [-8.61099, 41.14961] },
-  { name: "Singapore", tag: "europe2k19", coords: [103.851959, 1.29027] },
+  { name: "Singapore", tag: "taiwanexchange", coords: [103.851959, 1.29027] },
   { name: "Taiwan", tag: "taiwanexchange", coords: [120.9675, 24.8138] },
   { name: "Beijing", tag: "taiwanexchange", coords: [116.4074, 39.9042] },
   { name: "Luoyang", tag: "taiwanexchange", coords: [112.4539, 34.6202] },
   { name: "Shanghai", tag: "taiwanexchange", coords: [121.4737, 31.2304] },
+  { name: "Singapore", tag: "", coords: [103.851959, 1.29027] },
 ];
 
 let dimensions = {
@@ -78,10 +79,12 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
   step();
 
   function step() {
-    tourIdx++;
+    const numTours = touredLocations.length - 1;
+    tourIdx = (tourIdx + 1) % numTours;
+    console.log(tourIdx);
 
-    const p1 = touredLocations[tourIdx % 9].coords;
-    const p2 = touredLocations[(tourIdx + 1) % 9].coords;
+    const p1 = touredLocations[tourIdx].coords;
+    const p2 = touredLocations[(tourIdx + 1) % numTours].coords;
     const rotateIp = geoInterpolate([-p1[0], -p1[1]], [-p2[0], -p2[1]]);
     const adjustedRotateIp = (t) => {
       let rotateArr = rotateIp(t);
@@ -100,7 +103,7 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
               coordinates: [p1, arcIp(t)],
             },
             color:
-              touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+              touredLocations[tourIdx].tag === "europe2k19"
                 ? "#db7093"
                 : "#7b68ee",
           });
@@ -114,7 +117,7 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
             coordinates: [arcIp(t), p2],
           },
           color:
-            touredLocations[(tourIdx + 1) % 9].tag === "europe2k19"
+            touredLocations[tourIdx].tag === "europe2k19"
               ? "#db7093"
               : "#7b68ee",
         });
@@ -153,19 +156,21 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
     ctx.stroke();
 
     touredLocations.forEach((loc) => {
-      ctx.beginPath();
-      geoPathGenerator({ type: "Point", coordinates: loc.coords });
-      switch (loc.tag) {
-        case "europe2k19":
-          ctx.fillStyle = "#db7093";
-          break;
-        case "taiwanexchange":
-          ctx.fillStyle = "#7b68ee";
-          break;
-        default:
-          ctx.fillStyle = "#db7093";
+      if (loc.name !== "Singapore") {
+        ctx.beginPath();
+        geoPathGenerator({ type: "Point", coordinates: loc.coords });
+        switch (loc.tag) {
+          case "europe2k19":
+            ctx.fillStyle = "#db7093";
+            break;
+          case "taiwanexchange":
+            ctx.fillStyle = "#7b68ee";
+            break;
+          default:
+            ctx.fillStyle = "#db7093";
+        }
+        ctx.fill();
       }
-      ctx.fill();
     });
 
     return ctx.canvas;

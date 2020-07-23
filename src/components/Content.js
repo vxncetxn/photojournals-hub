@@ -158,11 +158,11 @@ const ContentComp = () => {
       </Intro>
       <Entries>
         <li>
-          <Anchor href="#">#europe2k19</Anchor>
+          <Anchor href="#">> europe2k19</Anchor>
           <Badge color="var(--color-accent-one)" />
         </li>
         <li>
-          <Anchor href="#">#taiwanexchange</Anchor>
+          <Anchor href="#">> taiwanexchange</Anchor>
           <Badge color="var(--color-accent-two)" />
         </li>
       </Entries>
