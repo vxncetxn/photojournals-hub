@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { window } from "browser-monads";
-import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
+import { geoOrthographic, geoPath, geoInterpolate, geoDistance } from "d3-geo";
 import { transition } from "d3-transition";
 import { json } from "d3-fetch";
 import * as topojson from "topojson-client";
@@ -41,6 +41,12 @@ let dimensions = {
 
 const dpi = window.devicePixelRatio;
 const sphere = { type: "Sphere" };
+const heartPath = new Path2D(
+  "m376 30c-27.783 0-53.255 8.804-75.707 26.168-21.525 16.647-35.856 37.85-44.293 53.268-8.437-15.419-22.768-36.621-44.293-53.268-22.452-17.364-47.924-26.168-75.707-26.168-77.532 0-136 63.417-136 147.514 0 90.854 72.943 153.015 183.369 247.118 18.752 15.981 40.007 34.095 62.099 53.414 2.912 2.55 6.652 3.954 10.532 3.954s7.62-1.404 10.532-3.953c22.094-19.322 43.348-37.435 62.111-53.425 110.414-94.093 183.357-156.254 183.357-247.108 0-84.097-58.468-147.514-136-147.514z"
+);
+const transMatrix = document
+  .createElementNS("http://www.w3.org/2000/svg", "svg")
+  .createSVGMatrix();
 
 const Globe = styled.canvas`
   position: absolute;
@@ -81,7 +87,6 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
   function step() {
     const numTours = touredLocations.length - 1;
     tourIdx = (tourIdx + 1) % numTours;
-    console.log(tourIdx);
 
     const p1 = touredLocations[tourIdx].coords;
     const p2 = touredLocations[(tourIdx + 1) % numTours].coords;
@@ -173,7 +178,26 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
       }
     });
 
-    return ctx.canvas;
+    if (
+      geoDistance(
+        [103.851959, 1.29027],
+        [-projection.rotate()[0], projection.rotate()[1]]
+      ) < 1.5707963267949
+    ) {
+      const heartIcon = new Path2D();
+      heartIcon.addPath(
+        heartPath,
+        transMatrix
+          .translate(
+            projection([103.851959, 1.29027])[0] - 5,
+            projection([103.851959, 1.29027])[1] - 5
+          )
+          .scale(0.03)
+      );
+      ctx.beginPath();
+      ctx.fillStyle = "#d7443e";
+      ctx.fill(heartIcon);
+    }
   }
 };
 

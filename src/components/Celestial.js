@@ -19,7 +19,7 @@ const Celestial = styled.div`
   box-shadow: var(--bs-celestial-from);
 
   transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
-  animation: ${Glow} 3s ease-out infinite alternate;
+  // animation: glow 3s ease-out infinite alternate;
 
   @media (max-width: 896px) {
     top: 15%;
