@@ -41,6 +41,20 @@ const Globe = styled.canvas`
   position: absolute;
   right: 0;
   top: 0;
+
+  width: ${(props) => {
+    switch (props.screenSize) {
+      case "desktop-large":
+        return 1000;
+      case "desktop-small":
+        return 900;
+      case "mobile-large":
+        return 750;
+      default:
+        return 500;
+    }
+  }}px;
+  height: ${window.innerHeight}px;
 `;
 
 const dpi = window.devicePixelRatio;
@@ -59,8 +73,9 @@ const createD3Globe = async (canvas, theme) => {
   const projection = geoOrthographic().fitWidth(dimensions.width, sphere);
 
   const ctx = canvas.getContext("2d");
-  ctx.canvas.width = dimensions.width;
-  ctx.canvas.height = dimensions.height;
+  ctx.canvas.width = dimensions.width * dpi;
+  ctx.canvas.height = dimensions.height * dpi;
+  ctx.scale(dpi, dpi);
   ctx.translate(dimensions.translateX, dimensions.translateY);
 
   const geoPathGenerator = geoPath(projection, ctx);
@@ -73,13 +88,17 @@ const createD3Globe = async (canvas, theme) => {
     const p1 = touredLocations[tourIdx % 9].coords;
     const p2 = touredLocations[(tourIdx + 1) % 9].coords;
     const rotateIp = geoInterpolate([-p1[0], -p1[1]], [-p2[0], -p2[1]]);
+    const adjustedRotateIp = (t) => {
+      let rotateArr = rotateIp(t);
+      return [rotateArr[0] - 5, rotateArr[1] + 25];
+    };
     const arcIp = geoInterpolate(p1, p2);
 
     transition()
       .duration(1250)
       .tween("rotate", function () {
         return function (t) {
-          projection.rotate(rotateIp(t));
+          projection.rotate(adjustedRotateIp(t));
           draw({
             geo: {
               type: "LineString",
@@ -203,7 +222,7 @@ const GlobeComp = ({ theme }) => {
     createD3Globe(globeRef.current, theme);
   }, [theme, screenSize]);
 
-  return <Globe ref={globeRef} />;
+  return <Globe ref={globeRef} screenSize={screenSize} />;
 };
 
 export default GlobeComp;
