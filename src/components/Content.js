@@ -95,8 +95,9 @@ const Intro = styled.p`
 const Entries = styled.ul`
   margin-top: 30px;
 
-  & a {
-    color: inherit;
+  & li {
+    display: flex;
+    align-items: center;
   }
 
   & > li + li {
@@ -114,6 +115,7 @@ const Badge = styled.span`
 
 const Anchor = styled.a`
   position: relative;
+  color: var(--color-text);
 
   &:after {
     content: "";
