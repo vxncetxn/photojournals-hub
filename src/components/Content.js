@@ -51,7 +51,8 @@ const SubHeader = styled.h2`
   font-weight: normal;
   margin-top: 10px;
 
-  & > span {
+  & > a {
+    color: inherit;
     text-decoration: underline dotted;
   }
 
@@ -111,6 +112,28 @@ const Badge = styled.span`
   margin-left: 10px;
 `;
 
+const Anchor = styled.a`
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    z-index: -1;
+    width: 0;
+    height: 8px;
+    background-color: var(--color-h1);
+    transition: width 0.3s ease-out;
+    will-change: width;
+  }
+
+  &:hover:after {
+    left: 0;
+    width: 100%;
+  }
+`;
+
 const ContentComp = () => {
   return (
     <ContentPanel>
@@ -118,7 +141,15 @@ const ContentComp = () => {
         <span>photojournals</span>.dev
       </Header>
       <SubHeader>
-        by <span>vance tan</span>.
+        by{" "}
+        <a
+          href="https://vancetan.dev/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          vance tan
+        </a>
+        .
       </SubHeader>
       <Intro>
         This is a place where I store the photo journals curated from the
@@ -127,11 +158,11 @@ const ContentComp = () => {
       </Intro>
       <Entries>
         <li>
-          <a href="#">#europe2k19</a>
+          <Anchor href="#">#europe2k19</Anchor>
           <Badge color="var(--color-accent-one)" />
         </li>
         <li>
-          <a href="#">#taiwanexchange</a>
+          <Anchor href="#">#taiwanexchange</Anchor>
           <Badge color="var(--color-accent-two)" />
         </li>
       </Entries>

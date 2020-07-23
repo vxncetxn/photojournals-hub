@@ -45,9 +45,20 @@ const Globe = styled.canvas`
   position: absolute;
   right: 0;
   top: 0;
+  width: 1000px;
+  height: 100vh;
 
-  width: ${(props) => dimensions[props.screenSize].width}px;
-  height: ${window.innerHeight}px;
+  @media (max-width: 1200px) {
+    width: 900px;
+  }
+
+  @media (max-width: 896px) {
+    width: 750px;
+  }
+
+  @media (max-width: 600px) {
+    width: 500px;
+  }
 `;
 
 const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
