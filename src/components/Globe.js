@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
+import { window } from "browser-monads";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
 import { json } from "d3-fetch";
