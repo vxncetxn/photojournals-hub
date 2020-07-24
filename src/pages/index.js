@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { window } from "browser-monads";
 
 import Defaults from "../components/Defaults";
 import Content from "../components/Content";
@@ -13,13 +12,17 @@ const Hero = styled.div`
 `;
 
 const IndexPage = () => {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme")
-      ? localStorage.getItem("theme")
-      : window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light"
-  );
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    setTheme(
+      localStorage.getItem("theme")
+        ? localStorage.getItem("theme")
+        : matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"
+    );
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("theme", theme);

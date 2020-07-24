@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { window } from "browser-monads";
+import { window, document } from "browser-monads";
 import { geoOrthographic, geoPath, geoInterpolate } from "d3-geo";
 import { transition } from "d3-transition";
 import { json } from "d3-fetch";
@@ -41,10 +41,10 @@ let dimensions = {
 
 const dpi = window.devicePixelRatio;
 const sphere = { type: "Sphere" };
-const pinPath = new Path2D(
+const pinPath = new window.Path2D(
   "m216.210938 0c-122.664063 0-222.460938 99.796875-222.460938 222.460938 0 154.175781 222.679688 417.539062 222.679688 417.539062s222.242187-270.945312 222.242187-417.539062c0-122.664063-99.792969-222.460938-222.460937-222.460938zm67.121093 287.597656c-18.507812 18.503906-42.8125 27.757813-67.121093 27.757813-24.304688 0-48.617188-9.253907-67.117188-27.757813-37.011719-37.007812-37.011719-97.226562 0-134.238281 17.921875-17.929687 41.761719-27.804687 67.117188-27.804687 25.355468 0 49.191406 9.878906 67.121093 27.804687 37.011719 37.011719 37.011719 97.230469 0 134.238281zm0 0"
 );
-const heartPath = new Path2D(
+const heartPath = new window.Path2D(
   "m376 30c-27.783 0-53.255 8.804-75.707 26.168-21.525 16.647-35.856 37.85-44.293 53.268-8.437-15.419-22.768-36.621-44.293-53.268-22.452-17.364-47.924-26.168-75.707-26.168-77.532 0-136 63.417-136 147.514 0 90.854 72.943 153.015 183.369 247.118 18.752 15.981 40.007 34.095 62.099 53.414 2.912 2.55 6.652 3.954 10.532 3.954s7.62-1.404 10.532-3.953c22.094-19.322 43.348-37.435 62.111-53.425 110.414-94.093 183.357-156.254 183.357-247.108 0-84.097-58.468-147.514-136-147.514z"
 );
 const transMatrix = document
@@ -171,7 +171,7 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
     touredLocations.forEach((loc) => {
       if (loc.name !== "Singapore") {
         if (isVisible(loc.coords)) {
-          const pinIcon = new Path2D();
+          const pinIcon = new window.Path2D();
           pinIcon.addPath(
             pinPath,
             transMatrix
@@ -198,7 +198,7 @@ const createD3Globe = async (canvas, geoFeatures, theme, screenSize) => {
     });
 
     if (isVisible([103.851959, 1.29027])) {
-      const heartIcon = new Path2D();
+      const heartIcon = new window.Path2D();
       heartIcon.addPath(
         heartPath,
         transMatrix
