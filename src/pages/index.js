@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { window } from "browser-monads";
 
 import Defaults from "../components/Defaults";
 import Content from "../components/Content";
@@ -12,7 +13,13 @@ const Hero = styled.div`
 `;
 
 const IndexPage = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme")
+      ? localStorage.getItem("theme")
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("theme", theme);
@@ -21,17 +28,9 @@ const IndexPage = () => {
   return (
     <>
       <Defaults />
-      <Hero
-        onClick={() => {
-          if (theme === "light") {
-            setTheme("dark");
-          } else {
-            setTheme("light");
-          }
-        }}
-      >
+      <Hero>
         {theme === "dark" ? <ShootingStars /> : null}
-        <Content />
+        <Content theme={theme} setTheme={setTheme} />
         <Globe theme={theme} />
         <Celestial />
       </Hero>

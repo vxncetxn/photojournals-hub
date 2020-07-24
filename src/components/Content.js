@@ -1,30 +1,39 @@
 import React from "react";
 import styled from "styled-components";
 
+import Sun from "../assets/sun.svg";
+import Moon from "../assets/moon.svg";
+
 const ContentPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   position: relative;
   width: 40%;
+  height: 100vh;
   padding: 85px 75px;
   font-family: var(--font-secondary);
-  font-size: 20px;
+  font-size: 24px;
   color: var(--color-text);
   transition: color 0.3s ease-out;
 
   z-index: 1;
 
   @media (max-width: 1200px) {
+    width: 50%;
     padding: 75px 65px;
-    font-size: 18px;
+    font-size: 22px;
   }
 
   @media (max-width: 896px) {
-    width: 60%;
+    width: 65%;
+    padding: 60px 50px;
   }
 
   @media (max-width: 600px) {
     width: 100%;
     padding: 50px 30px;
-    font-size: 16px;
+    font-size: 20px;
   }
 `;
 
@@ -32,6 +41,8 @@ const Header = styled.h1`
   font-family: var(--font-primary);
   font-size: 42px;
   font-weight: normal;
+
+  margin-top: 10px;
 
   & > span {
     color: var(--color-h1);
@@ -57,16 +68,15 @@ const SubHeader = styled.h2`
   }
 
   @media (max-width: 1200px) {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   @media (max-width: 600px) {
-    font-size: 20px;
+    font-size: 24px;
   }
 `;
 
 const Intro = styled.p`
-  font-size: 24px;
   line-height: 1.6;
   position: relative;
   margin-top: 50px;
@@ -81,14 +91,6 @@ const Intro = styled.p`
     color: var(--color-apostrophe);
     z-index: -1;
     transition: color 0.3s ease-out;
-  }
-
-  @media (max-width: 1200px) {
-    font-size: 22px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 20px;
   }
 `;
 
@@ -136,9 +138,58 @@ const Anchor = styled.a`
   }
 `;
 
-const ContentComp = () => {
+const SunIcon = styled(Sun)`
+  width: 25px;
+  height: 25px;
+  fill: var(--color-h1);
+
+  @media (max-width: 896px) {
+    width: 23px;
+    height: 23px;
+  }
+
+  @media (max-width: 600px) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const MoonIcon = styled(Moon)`
+  width: 25px;
+  height: 25px;
+  fill: var(--color-h1);
+
+  @media (max-width: 896px) {
+    width: 23px;
+    height: 23px;
+  }
+
+  @media (max-width: 600px) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const ThemeToggle = styled.button`
+  cursor: pointer;
+`;
+
+const ContentComp = ({ theme, setTheme }) => {
   return (
     <ContentPanel>
+      <ThemeToggle
+        onClick={() => {
+          if (theme === "light") {
+            setTheme("dark");
+            localStorage.setItem("theme", "dark");
+          } else {
+            setTheme("light");
+            localStorage.setItem("theme", "light");
+          }
+        }}
+      >
+        {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+      </ThemeToggle>
       <Header>
         <span>photojournals</span>.dev
       </Header>

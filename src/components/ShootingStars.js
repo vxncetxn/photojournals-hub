@@ -50,8 +50,9 @@ const ShootingStars = () => {
 
   return animating ? (
     <Stars>
-      {[...Array(getRandomInt(1, 3)).keys()].map(() => (
+      {[...Array(getRandomInt(1, 3)).keys()].map((idx) => (
         <Star
+          key={idx}
           left={getRandomInt(0, 100)}
           top={getRandomInt(0, 100)}
           width={getRandomInt(50, 200)}

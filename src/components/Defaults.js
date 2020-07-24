@@ -58,8 +58,9 @@ const Defaults = createGlobalStyle`
         color: black;
     }
 
-    .country, .sphere {
-       transition: fill 0.3s ease-out;
+    button {
+        background: none;
+        border: none;
     }
 `;
 

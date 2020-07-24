@@ -1,11 +1,11 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
-const Glow = keyframes`
-  100% {
-    box-shadow: var(--bs-celestial-to);
-  }
-`;
+// const Glow = keyframes`
+//   100% {
+//     box-shadow: var(--bs-celestial-to);
+//   }
+// `;
 
 const Celestial = styled.div`
   position: absolute;
