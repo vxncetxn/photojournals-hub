@@ -28,12 +28,13 @@ const ContentPanel = styled.div`
   @media (max-width: 896px) {
     width: 65%;
     padding: 60px 50px;
+    font-size: 20px;
   }
 
   @media (max-width: 600px) {
     width: 100%;
     padding: 50px 30px;
-    font-size: 20px;
+    font-size: 18px;
   }
 `;
 
@@ -171,6 +172,8 @@ const MoonIcon = styled(Moon)`
 `;
 
 const ThemeToggle = styled.button`
+  width: 25px;
+  height: 25px;
   cursor: pointer;
 `;
 
@@ -188,7 +191,11 @@ const ContentComp = ({ theme, setTheme }) => {
           }
         }}
       >
-        {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+        {theme === "light" ? (
+          <MoonIcon />
+        ) : theme === "dark" ? (
+          <SunIcon />
+        ) : null}
       </ThemeToggle>
       <Header>
         <span>photojournals</span>.dev
@@ -205,9 +212,9 @@ const ContentComp = ({ theme, setTheme }) => {
         .
       </SubHeader>
       <Intro>
-        This is a place where I store the photo journals curated from the
-        experiences on my trips and journeys. Each journal is crafted in a
-        unique style of its own, enjoy!
+        This is a collection of photo journals - albums that tell vivid stories
+        of the many experiences on my trips and travels. Each journal is crafted
+        in a unique style of its own, enjoy!
       </Intro>
       <Entries>
         <li>

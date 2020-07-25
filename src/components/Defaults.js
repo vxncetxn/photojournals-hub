@@ -40,12 +40,13 @@ const Defaults = createGlobalStyle`
 
     html {
         font-size: 62.5%;
+        overflow-x: hidden;
     }
 
     body {
         position: relative;
         background-color: var(--color-bg);
-        // overflow: hidden;
+        overflow-x: hidden;
         transition: background-color 0.3s ease-out;
     }
 
